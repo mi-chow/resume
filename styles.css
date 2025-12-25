@@ -69,17 +69,6 @@ body {
     line-height: 1.6;
     color: var(--gh-text-primary);
     background-color: var(--gh-canvas-default);
-    background-image: 
-        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 35px,
-            rgba(99, 102, 241, 0.02) 35px,
-            rgba(99, 102, 241, 0.02) 70px
-        );
-    background-attachment: fixed;
     position: relative;
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
@@ -95,6 +84,18 @@ body {
     pointer-events: none;
     z-index: -1;
     overflow: hidden;
+    /* 将背景移到这里，解决 Safari/iOS 的 fixed 兼容性问题 */
+    background-color: var(--gh-canvas-default);
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+        repeating-linear-gradient(
+            45deg,
+            rgba(99, 102, 241, 0) 0px,
+            rgba(99, 102, 241, 0) 35px,
+            rgba(99, 102, 241, 0.02) 35px,
+            rgba(99, 102, 241, 0.02) 70px
+        );
 }
 
 /* Gentle floating orbs */
@@ -197,49 +198,45 @@ body {
 
 /* Colorful dashed line */
 .colorful-dashed-line {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    z-index: 100;
-    pointer-events: none;
-    transform: rotate(0deg);
-    opacity: 0.8;
+position: absolute;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 4px;
+z-index: 100;
+pointer-events: none;
+transform: rotate(0deg);
+opacity: 0.8;
 }
 
 .dashed-line {
-    position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-}
-
-.dashed-line::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+    /* 折中版波浪背景：降低高亮透明度 (0.3)，色彩更柔和 */
     background: linear-gradient(
         90deg,
-        var(--gh-scale-blue),
-        var(--gh-scale-purple),
-        var(--gh-scale-pink),
-        var(--gh-scale-orange),
-        var(--gh-scale-blue)
+        var(--gh-scale-blue) 0%,
+        rgba(255, 255, 255, 0.3) 20%, 
+        var(--gh-scale-purple) 40%,
+        var(--gh-scale-pink) 60%,
+        rgba(255, 255, 255, 0.3) 80%,
+        var(--gh-scale-blue) 100%
     );
-    background-size: 200% 100%;
-    animation: colorWave 4s linear infinite;
+    background-size: 150% 100%; /* 增加尺寸，使颜色过渡更平滑 */
+    animation: colorWave 5s linear infinite; /* 大幅放慢速度，更显优雅 */
+    
+    /* 固定不动的虚线遮罩 */
     -webkit-mask-image: repeating-linear-gradient(
         90deg,
-        #000 0px,
-        #000 10px,
+        black 0px,
+        black 10px,
         transparent 10px,
         transparent 20px
     );
     mask-image: repeating-linear-gradient(
         90deg,
-        #000 0px,
-        #000 10px,
+        black 0px,
+        black 10px,
         transparent 10px,
         transparent 20px
     );
@@ -247,12 +244,13 @@ body {
 
 @keyframes colorWave {
     0% {
-        background-position: 0 0;
+        background-position: 300% 0;
     }
     100% {
-        background-position: 200% 0;
+        background-position: 0% 0;
     }
 }
+
 @keyframes gradientShift {
     0%, 100% {
         background-position: 0% 50%;
@@ -334,9 +332,10 @@ body {
 /* Typing effect */
 .typing-text {
     overflow: hidden;
-    border-right: 3px solid var(--gh-accent-fg);
+    border-right: none;
     white-space: nowrap;
-    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    display: inline-block;
+    max-width: fit-content;
 }
 
 @keyframes typing {
@@ -345,8 +344,56 @@ body {
 }
 
 @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: var(--gh-accent-fg) }
+    from, to { opacity: 0 }
+    50% { opacity: 1 }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+.typing-hint {
+    text-align: left;
+    margin-top: 10px;
+}
+
+/* Toast Notification */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.toast {
+    background: rgba(31, 35, 40, 0.9);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+[data-theme="dark"] .toast {
+    background: rgba(240, 246, 252, 0.9);
+    color: #0d1117;
 }
 
 .container {
@@ -357,41 +404,242 @@ body {
 
 /* Header Styles */
 .hero {
-    background: var(--gh-canvas-default);
-    backdrop-filter: blur(12px);
-    padding: 170px 0 110px;
+    background: transparent; /* 移除背景色，让全局背景透过来 */
+    padding: 140px 0 100px;
     margin-bottom: 60px;
     border-bottom: none;
     transition: all 0.3s ease;
     position: relative;
+    overflow: visible; /* 允许装饰元素溢出 */
 }
 
 .hero-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 50px;
+    gap: 60px;
+    /* 卡片化设计 - 高级感核心 */
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    padding: 60px;
+    border-radius: 32px;
+    box-shadow: 
+        0 40px 80px -20px rgba(50, 50, 93, 0.15),
+        0 20px 40px -20px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+    position: relative;
+    z-index: 10;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-theme="dark"] .hero-content {
+    background: rgba(22, 27, 34, 0.6);
+    box-shadow: 
+        0 40px 80px -20px rgba(0, 0, 0, 0.5),
+        0 20px 40px -20px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+.hero-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+        0 50px 90px -20px rgba(50, 50, 93, 0.2),
+        0 25px 50px -20px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+}
+
+/* 装饰性元素 - 悬浮兴趣标签 */
+.hero-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.hero-decoration {
+    position: absolute;
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gh-text-secondary);
+    box-shadow: 
+        0 4px 15px rgba(0,0,0,0.03),
+        0 0 0 1px rgba(255,255,255,0.3) inset;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    /* 确保动画名称正确，且 infinite 循环 */
+    animation: float-1 20s ease-in-out infinite;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    /* 初始旋转角度由 CSS 变量控制 */
+    transform: rotate(var(--r));
+}
+
+@keyframes float-1 {
+    0%, 100% { transform: translate(0, 0) rotate(var(--r)); }
+    25% { transform: translate(30px, -30px) rotate(calc(var(--r) + 5deg)); }
+    50% { transform: translate(0, -50px) rotate(calc(var(--r) - 3deg)); }
+    75% { transform: translate(-30px, -20px) rotate(calc(var(--r) + 2deg)); }
+}
+
+@keyframes float-2 {
+    0%, 100% { transform: translate(0, 0) rotate(var(--r)); }
+    33% { transform: translate(-40px, 20px) rotate(calc(var(--r) - 5deg)); }
+    66% { transform: translate(20px, 40px) rotate(calc(var(--r) + 3deg)); }
+}
+
+@keyframes float-3 {
+    0%, 100% { transform: translate(0, 0) rotate(var(--r)); }
+    20% { transform: translate(20px, 20px) rotate(calc(var(--r) + 4deg)); }
+    40% { transform: translate(-20px, 40px) rotate(calc(var(--r) - 2deg)); }
+    60% { transform: translate(-40px, -20px) rotate(calc(var(--r) + 2deg)); }
+    80% { transform: translate(20px, -40px) rotate(calc(var(--r) - 4deg)); }
+}
+
+[data-theme="dark"] .hero-decoration {
+    background: rgba(22, 27, 34, 0.3);
+    color: var(--gh-text-primary);
+    box-shadow: 
+        0 4px 15px rgba(0,0,0,0.2),
+        0 0 0 1px rgba(255,255,255,0.05) inset;
+}
+
+.deco-icon {
+    font-size: 1.1rem;
+}
+
+/* 凌乱分布与随机角度 - Hero 区域 (更稀疏) */
+.deco-math { top: 12%; left: 20%; --r: -8deg; animation-delay: -3s; animation-duration: 20s; animation-name: float-1; }
+.deco-stat { top: 5%; right: 25%; --r: 10deg; animation-delay: -6s; animation-duration: 22s; animation-name: float-2; }
+.deco-1 { top: 28%; left: 3%; --r: -15deg; animation-delay: 0s; animation-duration: 18s; animation-name: float-3; }
+.deco-2 { top: 35%; right: 5%; --r: 12deg; animation-delay: -5s; animation-duration: 21s; animation-name: float-1; }
+.deco-3 { bottom: 20%; left: 5%; --r: 8deg; animation-delay: -2s; animation-duration: 19s; animation-name: float-2; }
+.deco-4 { bottom: 15%; right: 5%; --r: -10deg; animation-delay: -8s; animation-duration: 16s; animation-name: float-3; } /* Transformer 往里放 */
+.deco-5 { top: 55%; left: 2%; --r: -20deg; animation-delay: -12s; animation-duration: 24s; opacity: 0.7; animation-name: float-1; }
+
+/* Section Decorations (页面下半部分的漂浮标签 - 按重要性排序) */
+.section-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1; /* 位于内容之下，背景之上 */
+    overflow: hidden;
+}
+
+/* 分布在页面不同高度，左右交替 */
+.deco-7 { top: 900px; left: 5%; --r: -12deg; animation-delay: -1s; animation-duration: 18s; opacity: 0.65; animation-name: float-3; }
+.deco-8 { top: 1100px; right: 8%; --r: 10deg; animation-delay: -6s; animation-duration: 22s; opacity: 0.6; animation-name: float-1; }
+.deco-9 { top: 1300px; left: 3%; --r: -15deg; animation-delay: -3s; animation-duration: 20s; opacity: 0.6; animation-name: float-2; }
+.deco-10 { top: 1500px; right: 2%; --r: 20deg; animation-delay: -8s; animation-duration: 17s; opacity: 0.6; animation-name: float-3; }
+.deco-11 { top: 1700px; left: 8%; --r: -8deg; animation-delay: -4s; animation-duration: 23s; opacity: 0.6; animation-name: float-1; }
+.deco-12 { top: 1900px; right: 6%; --r: 12deg; animation-delay: -9s; animation-duration: 19s; opacity: 0.6; animation-name: float-2; }
+.deco-13 { top: 2100px; left: 4%; --r: -18deg; animation-delay: -2s; animation-duration: 21s; opacity: 0.6; animation-name: float-3; }
+.deco-14 { top: 2300px; right: 10%; --r: 8deg; animation-delay: -7s; animation-duration: 18s; opacity: 0.6; animation-name: float-1; }
+
+/* 响应式调整：移动端隐藏部分标签或调整位置 */
+@media (max-width: 768px) {
+    .deco-5, .deco-9, .deco-10, .deco-13, .deco-14 {
+        display: none;
+    }
 }
 
 .profile-image-container {
     flex-shrink: 0;
     position: relative;
+    z-index: 2;
+}
+
+/* 头像背后的动态光晕 */
+.profile-image-container::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    background: linear-gradient(135deg, var(--gh-scale-blue), var(--gh-scale-purple));
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.3;
+    filter: blur(20px);
+    animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.5; }
 }
 
 .profile-image {
-    width: 180px;
-    height: 180px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid var(--gh-canvas-default);
-    box-shadow: 
-        0 10px 25px -5px rgba(99, 102, 241, 0.3),
-        0 0 0 4px rgba(99, 102, 241, 0.1);
-    transition: transform 0.3s ease;
+    border: 6px solid var(--gh-canvas-default);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .profile-image:hover {
-    transform: scale(1.05) rotate(2deg);
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Status Badge */
+.status-badge {
+    position: absolute;
+    bottom: -35px; /* 再往下放一点点 */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gh-canvas-default);
+    color: var(--gh-text-primary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border: 1px solid var(--gh-border-primary);
+    white-space: nowrap;
+    z-index: 10;
+    /* 移除跳动动画，添加过渡效果 */
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: default;
+}
+
+.status-badge:hover {
+    transform: translateX(-50%) translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    border-color: var(--gh-success-fg);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--gh-success-fg);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(26, 127, 55, 0.2);
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0% { box-shadow: 0 0 0 0 rgba(26, 127, 55, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(26, 127, 55, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(26, 127, 55, 0); }
 }
 
 .hero-text {
@@ -408,14 +656,36 @@ body {
     -webkit-text-fill-color: transparent;
     animation: gradientShift 3s ease-in-out infinite;
     position: relative;
+    display: inline-block;
+    vertical-align: middle;
 }
 
-.hero h1::after {
-    content: '�?;
+/* 打字机效果下的光标样式 - 始终在 h1 最后 */
+.hero h1.typing-text::after,
+.hero h1.typing-animation-complete::after {
+    content: '';
     position: absolute;
-    margin-left: 10px;
+    right: 0; /* 靠最右侧 */
+    top: 15%;
+    height: 70%;
+    width: 2px; /* 更细的光标 */
+    background-color: var(--gh-accent-fg);
+    animation: blink-caret 0.75s step-end infinite;
+}
+
+/* Emoji 样式 - 匹配标题渐变色 */
+.hero h1 .sparkle-emoji {
+    display: inline-block;
+    margin-left: 4px;
     font-size: 0.8em;
     animation: bounce 2s ease-in-out infinite;
+    vertical-align: middle;
+    /* 继承父元素的渐变文字效果 */
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
 }
 
 @keyframes gradientShift {
@@ -471,42 +741,32 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s;
-    padding: 8px 16px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    padding: 10px 20px;
     background-color: var(--gh-canvas-default);
     border-radius: 50px;
     border: 1px solid var(--gh-border-primary);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    font-weight: 500;
 }
 
 .contact-info a:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px) scale(1.05);
     border-color: var(--gh-accent-fg);
-    color: var(--gh-accent-fg);
-    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.15);
+    color: var(--gh-canvas-default);
+    background: linear-gradient(135deg, var(--gh-scale-blue), var(--gh-scale-purple));
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
 }
 
-/* Copy notification styles */
-.copy-notification {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100px);
-    background-color: var(--gh-accent-fg);
+.contact-info a:hover i {
     color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    opacity: 0;
-    transition: all 0.3s ease;
+    animation: shake 0.5s ease-in-out;
 }
 
-.copy-notification.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
+@keyframes shake {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
 }
 
 
@@ -630,7 +890,7 @@ section {
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
-    min-width: 180px;
+    min-width: 160px;
 }
 
 .period {
@@ -849,6 +1109,8 @@ footer {
         flex-direction: column;
         text-align: center;
         gap: 30px;
+        padding: 30px;
+        border-radius: 24px;
     }
 
     .hero-text {
@@ -894,5 +1156,3 @@ footer {
         display: none;
     }
 }
-
-

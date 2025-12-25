@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume-Mi Chow</title>
+    <title>Mi Chow - Personal Website</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,22 +28,33 @@
     </div>
 
     <header class="hero">
+        <div class="hero-decorations">
+            <div class="hero-decoration deco-math"><span class="deco-icon">📐</span> Math</div>
+            <div class="hero-decoration deco-stat"><span class="deco-icon">📊</span> Statistics</div>
+            <div class="hero-decoration deco-1"><span class="deco-icon">🤖</span> LLM</div>
+            <div class="hero-decoration deco-2"><span class="deco-icon">🎨</span> Diffusion</div>
+            <div class="hero-decoration deco-3"><span class="deco-icon">🕵️</span> Agents</div>
+            <div class="hero-decoration deco-4"><span class="deco-icon">⚖️</span> RLHF</div>
+        </div>
         <div class="container hero-content">
             <div class="profile-image-container">
                 <img src="images/profile.jpg" alt="Mi Chow" class="profile-image">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    Open to Work
+                </div>
             </div>
             <div class="hero-text">
-                <h1>Hi, I'm Mi Chow!</h1>
+                <h1>Hi, I'm Mi Chow!<span class="sparkle-emoji">✨</span></h1>
                 <p class="subtitle">Algorithm Engineer & Researcher 🚀</p>
                 <p class="bio">
                     I'm a master's student in <strong>Applied Statistics</strong> at <strong>Shanghai Center for Mathematical Sciences (SCMS)</strong>, <strong>Fudan University</strong>. I'm passionate about <strong>LLMs</strong> and <strong>Multi-agent Systems</strong>. 
                     Currently building smarter agents at Meituan. I love turning complex data into actionable intelligence.
                 </p>
                 <div class="contact-info">
-                    <a href="mailto:michow796@gmail.com" id="email-link" onclick="copyEmail(event)"><i class="fas fa-envelope"></i> michow796@gmail.com</a>
-                    <span><i class="fas fa-phone"></i> +86 189-4509-7736</span>
+                    <a href="javascript:void(0)" onclick="copyToClipboard('michow796@gmail.com', 'Email copied! ✨')"><i class="fas fa-envelope"></i> michow796@gmail.com</a>
+                    <a href="javascript:void(0)" onclick="copyToClipboard('+86 18945097736', 'Phone copied! 📱')"><i class="fas fa-phone"></i> +86 189-4509-7736</a>
                 </div>
-                <div id="copy-notification" class="copy-notification">Email copied to clipboard!</div>
             </div>
         </div>
         <!-- Colorful Dashed Line as Border -->
@@ -51,6 +62,21 @@
             <div class="dashed-line"></div>
         </div>
     </header>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Background Decorations for Sections -->
+    <div class="section-decorations">
+        <div class="hero-decoration deco-7"><span class="deco-icon">🧠</span> CoT</div>
+        <div class="hero-decoration deco-8"><span class="deco-icon">📚</span> RAG</div>
+        <div class="hero-decoration deco-9"><span class="deco-icon">🎯</span> Fine-tuning</div>
+        <div class="hero-decoration deco-10"><span class="deco-icon">🎨</span> AIGC</div>
+        <div class="hero-decoration deco-11"><span class="deco-icon">🤝</span> Multi-agent</div>
+        <div class="hero-decoration deco-12"><span class="deco-icon">🗣️</span> NLP</div>
+        <div class="hero-decoration deco-13"><span class="deco-icon">🐍</span> Python</div>
+        <div class="hero-decoration deco-14"><span class="deco-icon">📊</span> Data Mining</div>
+    </div>
 
     <main class="container">
         
@@ -68,11 +94,11 @@
                         <h3>Master of Applied Statistics</h3>
                         <h4>Fudan University</h4>
                     </div>
-                    <!--
                     <div class="card-right">
                         <span class="period">Sep 2023 - Jun 2026</span>
                     </div>
                 </div>
+                <!-- 
                 <div class="card wide-card">
                     <div class="card-left">
                         <div class="card-logo-wrapper">
@@ -87,8 +113,8 @@
                         <span class="period">Sep 2017 - Jun 2022</span>
                     </div>
                 </div>
+                -->
             </div>
-            -->
         </section>
 
         <!-- Experience Section -->
@@ -102,7 +128,7 @@
                         </div>
                     </div>
                     <div class="card-center">
-                        <h3>LLM Algorithm Intern</h3>
+                        <h3>LLM Application Algorithm Intern</h3>
                         <h4>Meituan</h4>
                         <p class="card-desc">
                             Contributing to <a href="https://apps.apple.com/us/app/%E5%B0%8F%E7%BE%8E-ai%E7%94%9F%E6%B4%BB%E5%B0%8F%E7%A7%98%E4%B9%A6/id6748377336?l=zh-Hans-CN" target="_blank" class="project-link">Xiaomei</a>, Meituan's AI Life Assistant. Leveraging LLM technology to provide intelligent, conversational services for daily life.
@@ -159,7 +185,9 @@
                         <span class="skill-tag">LLM Fine-tuning & Alignment (RLHF/DPO)</span>
                         <span class="skill-tag">Multi-agent Systems</span>
                         <span class="skill-tag">Cross-domain Adaptation</span>
+                        <span class="skill-tag">Ensemble Learning</span>
                         <span class="skill-tag">PyTorch & Transformers</span>
+                        <span class="skill-tag">Feature Engineering</span>
                     </div>
                 </div>
             </div>
@@ -329,71 +357,161 @@
             });
         });
 
-        // Typing effect for hero title
-        window.addEventListener('load', () => {
-            const heroTitle = document.querySelector('.hero h1');
-            heroTitle.classList.add('typing-text');
-        });
-
-        // Add hover sound effect (visual feedback)
-        document.querySelectorAll('.wide-card, .interest-item').forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                element.style.transform = element.style.transform + ' scale(1.02)';
-            });
-            
-            element.addEventListener('mouseleave', () => {
-                element.style.transform = element.style.transform.replace(' scale(1.02)', '');
-            });
-        });
-
-        // Typing effect for hero title
-        window.addEventListener('load', () => {
-            const heroTitle = document.querySelector('.hero h1');
-            heroTitle.classList.add('typing-text');
-        });
-
-        // Copy email function
-        function copyEmail(event) {
-            event.preventDefault(); // Prevent default mailto action
-
-            const email = 'michow796@gmail.com';
-            navigator.clipboard.writeText(email).then(() => {
-                // Show notification
-                const notification = document.getElementById('copy-notification');
-                notification.classList.add('show');
-
-                // Create sparkle effect
-                const emailLink = document.getElementById('email-link');
-                const rect = emailLink.getBoundingClientRect();
-                for (let i = 0; i < 8; i++) {
-                    createBalancedParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
-                }
-
-                // Hide notification after 2 seconds
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 2000);
-            }).catch(err => {
-                console.error('Copy failed:', err);
-                // Fallback for older browsers
-                const textArea = document.createElement("textarea");
-                textArea.value = email;
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
+        // 音频上下文初始化
+        let audioContext = null;
+        let audioEnabled = false;
+        
+        function initAudio() {
+            if (!audioContext) {
                 try {
-                    document.execCommand('copy');
-                    const notification = document.getElementById('copy-notification');
-                    notification.classList.add('show');
-                    setTimeout(() => {
-                        notification.classList.remove('show');
-                    }, 2000);
-                } catch (err) {
-                    console.error('Fallback copy failed:', err);
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    audioEnabled = true;
+                } catch (error) {
+                    console.log('Audio context creation failed:', error);
                 }
-                document.body.removeChild(textArea);
+            }
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        // 模拟真实的机械键盘“啪嗒”声
+        function playTypingSound() {
+            if (!audioContext) return;
+            if (audioContext.state === 'suspended') audioContext.resume();
+            
+            try {
+                const now = audioContext.currentTime;
+                
+                // 1. 高频撞击声 (Click) - 模拟按键触底的清脆声
+                const clickOsc = audioContext.createOscillator();
+                const clickGain = audioContext.createGain();
+                clickOsc.type = 'triangle';
+                clickOsc.frequency.setValueAtTime(2500 + Math.random() * 500, now);
+                clickGain.gain.setValueAtTime(0.1, now);
+                clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.01);
+                clickOsc.connect(clickGain);
+                clickGain.connect(audioContext.destination);
+                clickOsc.start(now);
+                clickOsc.stop(now + 0.01);
+
+                // 2. 机械回响声 (Clack) - 模拟键盘空腔的声音
+                const bufferSize = audioContext.sampleRate * 0.06; // 延长至 60ms
+                const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                
+                const noise = audioContext.createBufferSource();
+                noise.buffer = buffer;
+                
+                const filter = audioContext.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(1000 + Math.random() * 300, now); // 稍微降低频率，听起来更厚实
+                filter.Q.value = 1.5;
+                
+                const noiseGain = audioContext.createGain();
+                noiseGain.gain.setValueAtTime(0.06, now); // 稍微降低初始音量
+                noiseGain.gain.exponentialRampToValueAtTime(0.005, now + 0.05); // 延长衰减过程
+                
+                noise.connect(filter);
+                filter.connect(noiseGain);
+                noiseGain.connect(audioContext.destination);
+                
+                noise.start(now);
+                noise.stop(now + 0.06);
+                
+            } catch (error) {
+                console.log('Sound failed:', error);
+            }
+        }
+
+        // Copy to clipboard functionality
+        function copyToClipboard(text, message) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(message);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
             });
         }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Remove toast after 2 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // Typing effect for hero title
+        window.addEventListener('load', () => {
+            const heroTitle = document.querySelector('.hero h1');
+            const sparkleEmoji = heroTitle.querySelector('.sparkle-emoji');
+            const originalText = "Hi, I'm Mi Chow!";
+            
+            // 初始状态：清空文本
+            heroTitle.textContent = '';
+            heroTitle.appendChild(sparkleEmoji);
+            
+            let started = false;
+
+            function startTyping() {
+                if (started) return;
+                started = true;
+                
+                initAudio();
+                
+                // 立即添加打字类，显示光标
+                heroTitle.classList.add('typing-text');
+                
+                let charIndex = 0;
+                const typingSpeed = 160; // 放慢速度，从 120ms 调至 160ms
+                
+                function typeChar() {
+                    if (charIndex < originalText.length) {
+                        const existingText = heroTitle.childNodes[0];
+                        if (existingText && existingText.nodeType === Node.TEXT_NODE) {
+                            existingText.textContent = originalText.substring(0, charIndex + 1);
+                        } else {
+                            heroTitle.insertBefore(document.createTextNode(originalText.substring(0, charIndex + 1)), sparkleEmoji);
+                        }
+                        
+                        // 每一个字符出现都播放打字音效
+                        playTypingSound();
+                        
+                        charIndex++;
+                        setTimeout(typeChar, typingSpeed);
+                    } else {
+                        // 打字完成，保持光标闪烁
+                        heroTitle.classList.remove('typing-text');
+                        heroTitle.classList.add('typing-animation-complete');
+                    }
+                }
+                
+                typeChar();
+            }
+
+            // 页面加载后延迟一小会儿自动开始
+            setTimeout(startTyping, 500);
+
+            // 兜底：如果浏览器拦截了自动播放，用户第一次点击时确保音频上下文被激活
+            document.body.addEventListener('click', () => {
+                if (audioContext && audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }, { once: true });
+        });
     </script>
 </body>
 </html>
