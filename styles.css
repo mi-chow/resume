@@ -1121,6 +1121,11 @@ footer {
         border-radius: 24px;
     }
 
+    .hero-decorations,
+    .section-decorations {
+        display: none;
+    }
+
     .hero-text {
         text-align: center;
         display: flex;
